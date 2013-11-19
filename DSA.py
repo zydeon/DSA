@@ -33,7 +33,7 @@ def number_gen(p,q,g):
 		return (k,k_) 
 	except 'Inverse Error':
 		return number_gen(p,q,g)
-
+# Sign opertation
 def sign((p,q,g), H, (x, y)):
 	k,k_ = number_gen(p,q,g)
 	r = powmod(g,k,p) % q
@@ -42,13 +42,14 @@ def sign((p,q,g), H, (x, y)):
 
 	return (r, s)
 
+# Verify operation
 def verify((p,q,g), H, y, (r,s)):
 	if 0 < r and r < q and 0 < s and s < q:
 		w = inverse(s, q)
 		z = long(H, 16)
 		u1 = (z*w) % q
 		u2 = (r*w) % q
-		v = ((g**u1 * y**u2) % p) % q
+		v = ((powmod(g,u1,p) * powmod(y,u2,p)) % p) % q
 		return v == r
 	raise Exception('Verify Error')
 		
@@ -70,6 +71,13 @@ def range_(begin, stop):
 def group(list, n):
 	return zip(* [list[i::n] for i in range(n)])
 
+def gen_pair((p,q,g)):
+        N = no_bits(p)
+	c = getrandbits(N+64)
+        x = (c % (q-1)) + 1
+        y = powmod(g,x,p)
+        return (x,y)
+
 if __name__=='__main__':
 
 	p = long(raw_input()[2:])
@@ -84,7 +92,12 @@ if __name__=='__main__':
 
 	token = raw_input()
 	if token == 'genkey':
-		print 'b'
+                n = long(raw_input()[2:])
+                while n > 0:
+                        (x,y) = gen_pair((p,q,g))
+                        print "x=" + str(x)
+                        print "y=" + str(y)
+                        n -= 1
 
 	elif token == 'sign':
 		x = long(raw_input()[2:])
@@ -99,3 +112,8 @@ if __name__=='__main__':
 		y = long(raw_input()[2:])
 		tuples = group([l[2:-1] for l in stdin], 3)  # tuples (D, r, s)
 		verifies = [verify((p,q,g), t[0], y, (long(t[1]), long(t[2]))) for t in tuples]
+                for v in verifies:
+                        if v:
+                                print 'signature_valid'
+                        else:
+                                print 'signature_invalid'
