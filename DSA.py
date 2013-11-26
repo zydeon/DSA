@@ -5,6 +5,9 @@ from gmpy2 import is_prime   	# miller-rabin primality test
 from gmpy2 import powmod		# (x ** y) mod m
 from sys import stdin
 
+N = 1024
+L = 160
+
 # z^-1 mod a
 def inverse(z,a):
 	if z > 0 and z < a and a > 0:
@@ -25,7 +28,6 @@ def inverse(z,a):
 
 # Per-Message Secret Number generator
 def number_gen(p,q,g):
-	N = no_bits(p)
 	c = getrandbits(N+64)
 	k = (c % (q-1))+1
 	try:
@@ -71,8 +73,8 @@ def range_(begin, stop):
 def group(list, n):
 	return zip(* [list[i::n] for i in range(n)])
 
+# Generate a pair of keys
 def gen_pair((p,q,g)):
-        N = no_bits(p)
 	c = getrandbits(N+64)
         x = (c % (q-1)) + 1
         y = powmod(g,x,p)
