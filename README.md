@@ -7,8 +7,8 @@ Implementation of the DSA in python.
 
 In order to run the program first you need to install gmpy2.
 
-``pip install gmpy2``
+``$ pip install gmpy2``
 
-Then run the program like:
+Then run the program:
 
-``python DSA.py < <input_file>``
+``$ python DSA.py < <input_file>``
